@@ -4,8 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
 @interface ExtendImageServiceForEchofon : NSObject
-
-+(void)loadJson:(NSString *)id;
++(NSString *)getImageURLbyloadJson:(NSString *)id;
++(NSString *)getThumbImageURLbyloadJson:(NSString *)id;
 @end

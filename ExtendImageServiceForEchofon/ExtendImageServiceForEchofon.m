@@ -7,8 +7,8 @@
 #import "EchofonProtocols.h"
 #import "ExtendImageServiceForEchofon.h"
 #import "SBJson.h"
-@implementation NSObject(ExtendImageServiceForEchofon)
 
+@implementation NSObject(ExtendImageServiceForEchofon)
 - (BOOL)__isImageURL
 {
     BOOL result = [self __isImageURL];
@@ -28,31 +28,40 @@
         } else if ([url.host hasSuffix:@"miil.me"] && [url.path hasPrefix:@"/p/"]) {
             result = YES;
         } else if([url.host hasPrefix:@"via.me"]){
-            NSLog(@"__imageURL");
             result = YES;
         }
     }
     
     return result;
 }
-+(void)loadJson:(NSString *)id
++(NSString *)getImageURLbyloadJson:(NSString *)id
 {
     NSString *url = [NSString stringWithFormat:@"https://api.via.me/v1/posts/%@?client_id=dt7wzdzwiph35lhj0b740ooiy",id];
-    /*
+    
     NSString *json_data = [NSString stringWithContentsOfURL:[NSURL URLWithString:url]
                                                    encoding:NSUTF8StringEncoding
                                                       error:nil
                            ];
     SBJsonParser *parser = [[SBJsonParser alloc] init];
-    NSError *error = nil;
-    NSDictionary *dic = [parser objectWithString:json_data error:error];
-    if (!dic) {
-        NSLog(@"%@",[error description]);
-    }else{
-        NSLog(@"%@",[dic description]);
-    }
-     */
-    NSLog(@"%@",url);
+    NSError **error = nil;
+    NSDictionary *jsondic = [parser objectWithString:json_data error:error];
+    NSString *imageURL = [[[jsondic objectForKey:@"response"] objectForKey:@"post"] objectForKey:@"media_url"];
+    return  imageURL;
+}
+
++(NSString *)getThumbImageURLbyloadJson:(NSString *)id{
+    NSString *url = [NSString stringWithFormat:@"https://api.via.me/v1/posts/%@?client_id=dt7wzdzwiph35lhj0b740ooiy",id];
+    
+    NSString *json_data = [NSString stringWithContentsOfURL:[NSURL URLWithString:url]
+                                                   encoding:NSUTF8StringEncoding
+                                                      error:nil
+                           ];
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    NSError **error = nil;
+    NSDictionary *jsondic = [parser objectWithString:json_data error:error];
+    NSString *thumbImageURL = [[[jsondic objectForKey:@"response"] objectForKey:@"post"] objectForKey:@"thumb_55_url"];
+    return thumbImageURL;
+    
 }
                    
 - (BOOL)__isVideoURL
@@ -85,8 +94,7 @@
             result = [NSString stringWithFormat:@"%@://%@/%@.jpeg?size=480", url.scheme, url.host, url.path];
         } else if([url.host hasPrefix:@"via.me"]){
             NSString *str = [lastPathComponent stringByReplacingOccurrencesOfString:@"-" withString:@""];
-            [ExtendImageServiceForEchofon loadJson:str];
-            
+            result = [ExtendImageServiceForEchofon getImageURLbyloadJson:str];
         }
     }
     return result;
@@ -110,6 +118,9 @@
             result = [NSString stringWithFormat:@"http://static.ow.ly/photos/normal/%@.jpg", lastPathComponent];
         } else if ([url.host hasSuffix:@"miil.me"] && [url.path hasPrefix:@"/p/"]) {
             result = [NSString stringWithFormat:@"%@://%@/%@.jpeg?size=60", url.scheme, url.host, url.path];
+        }else if([url.host hasPrefix:@"via.me"]){
+            NSString *str = [lastPathComponent stringByReplacingOccurrencesOfString:@"-" withString:@""]; 
+            result = [ExtendImageServiceForEchofon getThumbImageURLbyloadJson:str];
         }
     }
     return result;
