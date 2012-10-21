@@ -7,4 +7,5 @@
 
 @interface ExtendImageServiceForEchofon : NSObject
 
++(void)loadJson:(NSString *)id;
 @end

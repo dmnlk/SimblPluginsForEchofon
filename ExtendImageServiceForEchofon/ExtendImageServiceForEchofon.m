@@ -27,11 +27,34 @@
             result = YES;
         } else if ([url.host hasSuffix:@"miil.me"] && [url.path hasPrefix:@"/p/"]) {
             result = YES;
+        } else if([url.host hasPrefix:@"via.me"]){
+            NSLog(@"__imageURL");
+            result = YES;
         }
     }
+    
     return result;
 }
-
++(void)loadJson:(NSString *)id
+{
+    NSString *url = [NSString stringWithFormat:@"https://api.via.me/v1/posts/%@?client_id=dt7wzdzwiph35lhj0b740ooiy",id];
+    /*
+    NSString *json_data = [NSString stringWithContentsOfURL:[NSURL URLWithString:url]
+                                                   encoding:NSUTF8StringEncoding
+                                                      error:nil
+                           ];
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    NSError *error = nil;
+    NSDictionary *dic = [parser objectWithString:json_data error:error];
+    if (!dic) {
+        NSLog(@"%@",[error description]);
+    }else{
+        NSLog(@"%@",[dic description]);
+    }
+     */
+    NSLog(@"%@",url);
+}
+                   
 - (BOOL)__isVideoURL
 {
     BOOL result = [self __isVideoURL];
@@ -60,6 +83,10 @@
             result = [NSString stringWithFormat:@"http://static.ow.ly/photos/normal/%@.jpg", lastPathComponent];
         } else if ([url.host hasSuffix:@"miil.me"] && [url.path hasPrefix:@"/p/"]) {
             result = [NSString stringWithFormat:@"%@://%@/%@.jpeg?size=480", url.scheme, url.host, url.path];
+        } else if([url.host hasPrefix:@"via.me"]){
+            NSString *str = [lastPathComponent stringByReplacingOccurrencesOfString:@"-" withString:@""];
+            [ExtendImageServiceForEchofon loadJson:str];
+            
         }
     }
     return result;
@@ -97,23 +124,6 @@
  */
 + (void) load
 {
-    
-    NSLog(@"aaaaaa");
-    NSString *url =@"https://api.via.me/v1/posts/687yp2e?client_id=dt7wzdzwiph35lhj0b740ooiy";
-    NSString *json_data = [NSString stringWithContentsOfURL:[NSURL URLWithString:url]
-                                                   encoding:NSUTF8StringEncoding
-                                                      error:nil
-                           ];
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    NSError *error = nil;
-    NSDictionary *dic = [parser objectWithString:json_data error:error];
-    if (!dic) {
-        NSLog(@"%@",[error description]);
-    }else{
-        NSLog(@"%@",[dic description]);
-    }
-
-    
     ExtendImageServiceForEchofon* plugin = [ExtendImageServiceForEchofon sharedInstance];
     // ... do whatever
     if (plugin) {
@@ -142,23 +152,6 @@
         plugin = [[ExtendImageServiceForEchofon alloc] init];
     
     return plugin;
-}
-
-+(void)loadJson
-{
-    NSString *url =@"https://api.via.me/v1/posts/687yp2e?client_id=dt7wzdzwiph35lhj0b740ooiy";
-    NSString *json_data = [NSString stringWithContentsOfURL:[NSURL URLWithString:url]
-                                                   encoding:NSUTF8StringEncoding
-                                                      error:nil
-                           ];
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    NSError *error = nil;
-    NSDictionary *dic = [parser objectWithString:json_data error:error];
-    if (!dic) {
-        NSLog(@"%@",[error description]);
-    }else{
-        NSLog(@"%@",[dic description]);
-    }
 }
 
 @end
