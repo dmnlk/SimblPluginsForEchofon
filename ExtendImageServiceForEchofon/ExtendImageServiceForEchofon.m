@@ -6,7 +6,7 @@
 #import <objc/runtime.h>
 #import "EchofonProtocols.h"
 #import "ExtendImageServiceForEchofon.h"
-
+#import "SBJson.h"
 @implementation NSObject(ExtendImageServiceForEchofon)
 
 - (BOOL)__isImageURL
@@ -97,6 +97,23 @@
  */
 + (void) load
 {
+    
+    NSLog(@"aaaaaa");
+    NSString *url =@"https://api.via.me/v1/posts/687yp2e?client_id=dt7wzdzwiph35lhj0b740ooiy";
+    NSString *json_data = [NSString stringWithContentsOfURL:[NSURL URLWithString:url]
+                                                   encoding:NSUTF8StringEncoding
+                                                      error:nil
+                           ];
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    NSError *error = nil;
+    NSDictionary *dic = [parser objectWithString:json_data error:error];
+    if (!dic) {
+        NSLog(@"%@",[error description]);
+    }else{
+        NSLog(@"%@",[dic description]);
+    }
+
+    
     ExtendImageServiceForEchofon* plugin = [ExtendImageServiceForEchofon sharedInstance];
     // ... do whatever
     if (plugin) {
@@ -111,6 +128,7 @@
         method_exchangeImplementations(class_getInstanceMethod(from, @selector(getThumbnailImageURL)), 
                                        class_getInstanceMethod(to, @selector(__getThumbnailImageURL)));
     }
+    
 }
 
 /**
@@ -124,6 +142,23 @@
         plugin = [[ExtendImageServiceForEchofon alloc] init];
     
     return plugin;
+}
+
++(void)loadJson
+{
+    NSString *url =@"https://api.via.me/v1/posts/687yp2e?client_id=dt7wzdzwiph35lhj0b740ooiy";
+    NSString *json_data = [NSString stringWithContentsOfURL:[NSURL URLWithString:url]
+                                                   encoding:NSUTF8StringEncoding
+                                                      error:nil
+                           ];
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    NSError *error = nil;
+    NSDictionary *dic = [parser objectWithString:json_data error:error];
+    if (!dic) {
+        NSLog(@"%@",[error description]);
+    }else{
+        NSLog(@"%@",[dic description]);
+    }
 }
 
 @end
