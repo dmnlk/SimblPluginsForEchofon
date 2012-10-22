@@ -111,7 +111,7 @@
 @end
 
 @implementation ExtendImageServiceForEchofon
-@synthesize string;
+
 /**
  * A special method called by SIMBL once the application has started and all classes are initialized.
  */
@@ -175,11 +175,6 @@
     NSString *thumbImageURL = [[[jsondic objectForKey:@"response"] objectForKey:@"post"] objectForKey:@"thumb_55_url"];
     return thumbImageURL;
     
-}
--(void)testMethod
-{
-    string = @"hoge";
-    NSLog(@"%@",string);
 }
 
 @end
